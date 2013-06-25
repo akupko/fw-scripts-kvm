@@ -30,3 +30,20 @@ undefine_network() {
 # example of network actions
 #define_network testnet virbr100 10.99.1.1 255.255.255.0
 #undefine_network testnet
+
+define_existing_bridge() {
+  BRIDGE=$1
+net_list=`virsh net-list | awk '{print $1}' | sed '1,2d'`
+#echo "This network located on you PC $net_list"
+
+#List bridge
+for net in $net_list
+do
+        br_list=`virsh net-info $net | grep Bridge | awk '{print $2}'`
+	if [ $br_list == $BRIDGE ]
+	then
+		echo "This network $net exist bridge $BRIDGE"
+	fi	
+	brs_list+="$br_list "
+done
+}
