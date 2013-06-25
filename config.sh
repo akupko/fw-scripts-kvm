@@ -13,8 +13,8 @@ iso_path=`ls -1 iso/*.iso 2>/dev/null | head -1`
 vm_name_prefix=fuel-web-
 
 # Host interfaces to bridge VMs interfaces with
-idx=0
-bridge_ip="10.20.0.1 240.0.1.1 172.16.0.1" #my
+idx=200
+bridge_ip=(10.20.0.1 240.0.1.1 172.16.0.1) #my
 for ip in $bridge_ip #my
 do
 #for ip in 10.20.0.1 240.0.1.1 172.16.0.1; do
