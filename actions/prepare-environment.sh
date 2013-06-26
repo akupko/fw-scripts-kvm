@@ -5,7 +5,7 @@ source config.sh
 source functions/vm.sh
 source functions/network.sh
 
-netmask=255.255.255.0
+#netmask=255.255.255.0
 
 # Check for ISO image to be available
 #echo -n "Checking for Fuel Web ISO image... "
@@ -17,7 +17,7 @@ netmask=255.255.255.0
 
 
 #Check create bridge or not
-idx=200
+#idx=200
 for (( i=0; i<3; i++ ))
 do
 	ip=`ip a show dev virbr$idx  `

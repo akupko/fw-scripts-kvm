@@ -15,14 +15,15 @@ vm_name_prefix=fuel-web-
 # Host interfaces to bridge VMs interfaces with
 idx=200
 bridge_ip=(10.20.0.1 240.0.1.1 172.16.0.1) #my
-for ip in $bridge_ip #my
-do
+netmask=255.255.255.0
+#for ip in $bridge_ip #my
+#do
 #for ip in 10.20.0.1 240.0.1.1 172.16.0.1; do
-  host_nic_name[$idx]=vboxnet$idx
-  host_nic_ip[$idx]=$ip
-  host_nic_mask[$idx]=255.255.255.0
-  idx=$((idx+1))
-done
+#  host_nic_name[$idx]=vboxnet$idx
+#  host_nic_ip[$idx]=$ip
+#  host_nic_mask[$idx]=255.255.255.0
+#  idx=$((idx+1))
+#done
 
 # Master node settings
 vm_master_cpu_cores=1
