@@ -11,7 +11,7 @@ get_vms_running() {
 }
 
 get_vms_present() {
-    virsh list | grep -E "running|shut off" | awk '{print $2}'
+    virsh list --all | grep -E "running|shut off" | awk '{print $2}'
 }
 
 is_vm_running() {
@@ -35,7 +35,8 @@ create_vm() {
     HYPERVISOR="qemu:///system"
    
     # Create virtual machine with the right name and type (assuming CentOS) 
-    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us
+    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --boot cdrom,hd,network
+    #virsh destroy $name
 
     # Configure main network interface
     add_nic_to_vm $name $nic
@@ -50,7 +51,7 @@ add_nic_to_vm() {
     echo "Adding NIC to $name and bridging with host NIC $nic..."
 
     # Configure network interfaces
-    attach-interface ${name} --type network --source ${nic} --persistent
+    virsh attach-interface ${name} --type network --source ${nic} --persistent
 }
 
 add_disk_to_vm() {
@@ -71,29 +72,35 @@ add_disk_to_vm() {
 
     echo "Adding disk to $vm_name, with size $disk_mb Mb..."
 
-    vm_disk_path="$(get_vm_base_path)/"
+    vm_disk_path="$(get_vm_base_path)"
     disk_name="${vm_name}_${port}"
     disk_filename="${disk_name}.qcow2"
     qemu-img create -f qcow2 ${vm_disk_path}/${disk_filename} ${disk_mb}M
-    attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target $target
+    virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target $target --subdriver qcow2
 }
 
 delete_vm() {
     name=$1
     vm_base_path=$(get_vm_base_path)
-    vm_path="$vm_base_path/$name/"
+    vm_path="${vm_base_path}/${name}_*\.qcow2"
 
     # Power off VM, if it's running
     if is_vm_running $name; then
-        VBoxManage controlvm $name poweroff
+	echo "Stopping VM $name"
+        virsh destroy $name
     fi
 
-    # Virtualbox does not fully delete VM file structure, so we need to delete the corresponding directory with files as well 
-    if [ -d "$vm_path"  ]; then
-        echo "Deleting existing virtual machine $name..."
-        VBoxManage unregistervm $name --delete
-        rm -rf "$vm_path"
-    fi
+    # Undefining VM
+    echo "Deleting existing virtual machine $name..."
+    virsh undefine $name
+
+    # Deleting images
+    for file in $vm_path; do 
+	if [ -f "$file"  ]; then 
+        echo "Deleting existing $file for virtual machine $name..."
+        rm -f "$file"
+	fi
+    done
 }
 
 delete_vms_multiple() {
@@ -113,8 +120,7 @@ start_vm() {
     name=$1
 
     # Just start it
-    #VBoxManage startvm $name --type headless
-    VBoxManage startvm $name
+    virsh start $name
 }
 
 mount_iso_to_vm() {
@@ -122,12 +128,14 @@ mount_iso_to_vm() {
     iso_path=$2
  
     # Mount ISO to the VM
-    VBoxManage storageattach $name --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium "$iso_path"
+    virsh attach-disk ${name} ${iso_path} hdc --type cdrom --mode readonly
 }
 
 enable_network_boot_for_vm() {
     name=$1
 
-    # Set the right boot priority
-    VBoxManage modifyvm $name --boot1 disk --boot2 net --boot3 none --boot4 none --nicbootprio1 1
+    # Set the right boot device
+    virsh dumpxml ${name} > /tmp/${name}.xml
+    # sed 
+    #VBoxManage modifyvm $name --boot1 disk --boot2 net --boot3 none --boot4 none --nicbootprio1 1
 }
