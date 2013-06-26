@@ -16,17 +16,21 @@ source functions/network.sh
 #echo "OK"
 
 
-#Check create bridge or not
-#idx=200
-for (( i=0; i<3; i++ ))
+#Check create bridge or not and create if not exist
+
+for idx1 in $idx_list
 do
-	ip=`ip a show dev virbr$idx  `
-	if [ $? == 0 ]
-		then	
-			echo "Bridge exists"
-			define_existing_bridge virbr$idx
-		else 
-			define_network testnet$idx virbr$idx ${bridge_ip[$i]} $netmask
-		fi
-idx=$((idx+1))
+	ip=`ip a show dev ${host_net_bridge[$idx1]}`
+	if [ $? == 0 ]; then	
+		echo "Bridge exists"
+		check_existing_bridge ${host_net_bridge[$idx1]}
+		NET_ERR="True"
+	fi
 done
+
+if [ -n $NET_ERR ]; then
+	echo "ERROR: Some of bridges are already used, please check existing networks or redefine [idx] variable in config.sh"
+	exit 1
+fi
+
+define_network ${host_net_name$[idx]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
