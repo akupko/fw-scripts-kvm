@@ -46,7 +46,6 @@ check_existing_bridge() {
 		exist_net+="$net "
 	fi	
   done
-echo "$exist_net"
   for check_net in $exist_net
   do
 	check_existing_vms $check_net

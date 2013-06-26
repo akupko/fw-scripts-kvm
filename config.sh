@@ -10,15 +10,14 @@ cluster_size=3
 iso_path=`ls -1 iso/*.iso 2>/dev/null | head -1`
 
 # Every Fuel Web machine name will start from this prefix  
-#vm_name_prefix=fuel-web-
-vm_name_prefix=testnet
+vm_name_prefix=fuel-web-
+#vm_name_prefix=testnet
 
 # Host interfaces to bridge VMs interfaces with
-idx=200
-#bridge_ip=(10.20.0.1 240.0.1.1 172.16.0.1) #my
+idx=150
 netmask=255.255.255.0
-#for ip in $bridge_ip #my
-for ip in 10.20.0.1 240.0.1.1 172.16.0.1; do
+for ip in 10.20.1.1 172.16.1.1; do
+#for ip in 10.20.0.1 240.0.1.1 172.16.0.1; do
   host_net_name[$idx]="${vm_name_prefix}${idx}"
   host_net_bridge[$idx]="virbr${idx}"
   host_nic_ip[$idx]="$ip"

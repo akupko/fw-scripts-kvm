@@ -28,9 +28,12 @@ do
 	fi
 done
 
-if [ -n $NET_ERR ]; then
+if [[ $NET_ERR ]]; then
 	echo "ERROR: Some of bridges are already used, please check existing networks or redefine [idx] variable in config.sh"
 	exit 1
 fi
 
-define_network ${host_net_name$[idx]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
+for idx1 in $idx_list
+do
+	define_network ${host_net_name[$idx1]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
+done
