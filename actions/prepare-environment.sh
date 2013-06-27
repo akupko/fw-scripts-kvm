@@ -15,6 +15,16 @@ source functions/network.sh
 #fi
 #echo "OK"
 
+# Check for expect
+echo -n "Checking for 'expect'... "
+expect -v >/dev/null 2>&1 || { echo >&2 "'expect' is not available in the path, but it's required. Please install 'expect' package. Aborting."; exit 1; }
+echo "OK"
+
+# Check for virsh
+echo -n "Checking for 'virsh'... "
+virsh -v >/dev/null 2>&1 || { echo >&2 "'virsh' is not available in the path, but it's required. Please install 'libvirt' package. Aborting."; exit 1; }
+echo "OK"
+
 
 #Check create bridge or not and create if not exist
 
@@ -35,5 +45,6 @@ fi
 
 for idx1 in $idx_list
 do
+# Create the required host-only interfaces
 	define_network ${host_net_name[$idx1]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
 done
