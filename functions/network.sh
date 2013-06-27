@@ -1,5 +1,9 @@
 #!/bin/bash
 
+get_previous_networks() {
+  virsh net-list | grep "$env_name_prefix" | awk '{print $1}'
+}
+
 define_network() {
   NAME=$1
   BRIDGE=$2
@@ -25,6 +29,18 @@ undefine_network() {
   NAME=$1
   virsh net-destroy ${NAME}
   virsh net-undefine ${NAME}
+}
+
+delete_previous_networks() {
+  echo "checking existing nets"
+  if get_previous_networks
+  then
+    for pnet in `get_previous_networks`
+    do
+      echo "Deleting net $pnet"
+      undefine_network $pnet
+    done
+  fi
 }
 
 # example of network actions
@@ -83,4 +99,6 @@ create_all_networks() {
   do
         define_network ${host_net_name[$idx1]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
   done
-} 
+}
+
+ 

@@ -30,10 +30,10 @@ echo -n "Checking for 'qemu-img'... "
 which qemu-img >/dev/null && { echo >&2 "OK"; } || { echo  >&2 "'qemu-img' tool is not installed."; exit 1; }
 
 # Delete all VMs from the previous Fuel Web installation
-delete_vms_multiple $vm_name_prefix
+delete_vms_multiple $env_name_prefix
 
-#Delete 
-#Check create bridge or not and create if not exist
+#Delete previous networks
+delete_previous_networks
 
 #check_all_bridges
 check_all_bridges || exit 1
