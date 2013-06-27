@@ -12,12 +12,13 @@ source functions/product.sh
 
 # Create master node for the product
 name="${env_name_prefix}master"
+first_net="${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f 1`]}"
 delete_vm $name
 echo
-create_vm $name ${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f 1`]} $vm_master_cpu_cores $vm_master_memory_mb $vm_master_disk_mb
+create_vm $name $first_net $vm_master_cpu_cores $vm_master_memory_mb $vm_master_disk_mb
 echo
 
-# Adding brdige NIC if any
+# Adding bridge NIC if any
 if [[ $use_bridge == 1 ]]; then
    add_br_nic_to_vm #name $br_name
 fi
