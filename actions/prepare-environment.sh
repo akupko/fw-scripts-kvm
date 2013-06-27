@@ -5,15 +5,14 @@ source config.sh
 source functions/vm.sh
 source functions/network.sh
 
-#netmask=255.255.255.0
 
 # Check for ISO image to be available
-#echo -n "Checking for Fuel Web ISO image... "
-#if [ -z $iso_path ]; then
-#    echo "Fuel Web image is not found. Please download it and put under 'iso' directory."
-#    exit 1
-#fi
-#echo "OK"
+echo -n "Checking for Fuel Web ISO image... "
+if [ -z $iso_path ]; then
+    echo "Fuel Web image is not found. Please download it and put under 'iso' directory."
+    exit 1
+fi
+echo "OK"
 
 # Check for expect
 echo -n "Checking for 'expect'... "

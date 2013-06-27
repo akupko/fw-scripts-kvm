@@ -32,7 +32,7 @@ done
 
 #
 
-mount_iso_to_vm $name $iso_path
+#mount_iso_to_vm $name $iso_path
 
 # Start virtual machine with the master node
 echo

@@ -35,8 +35,10 @@ create_vm() {
     HYPERVISOR="qemu:///system"
    
     # Create virtual machine with the right name and type (assuming CentOS) 
-    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --boot cdrom,hd,network
-    #virsh destroy $name
+#    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --boot cdrom,hd,network
+virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --cdrom $iso_path --boot cdrom,hd,network
+ 
+   #virsh destroy $name
 
     # Configure main network interface
     add_nic_to_vm $name $nic
