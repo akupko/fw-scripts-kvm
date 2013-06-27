@@ -25,6 +25,13 @@ echo -n "Checking for 'virsh'... "
 virsh -v >/dev/null 2>&1 || { echo >&2 "'virsh' is not available in the path, but it's required. Please install 'libvirt' package. Aborting."; exit 1; }
 echo "OK"
 
+#Check for qemu-img
+echo -n "Checking for 'qemu-img'... "
+which qemu-img >/dev/null && { echo >&2 "'qemu-img' is  Exists"; } || { echo  >&2 "'qemu-img' tool is not installed."; exit 1; }
+
+# Delete all VMs from the previous Fuel Web installation
+delete_vms_multiple $vm_name_prefix
+
 
 #Check create bridge or not and create if not exist
 
@@ -48,3 +55,5 @@ do
 # Create the required host-only interfaces
 	define_network ${host_net_name[$idx1]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
 done
+
+
