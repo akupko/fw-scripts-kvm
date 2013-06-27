@@ -54,6 +54,15 @@ add_nic_to_vm() {
     virsh attach-interface ${name} --type network --source ${nic} --persistent
 }
 
+add_br_nic_to_vm() {
+    name=$1
+    bridge=$2
+    echo "Adding Bridge to $name"
+
+    # Configure network interfaces
+    virsh attach-interface ${name} --type bridge --source ${bridge} --persistent
+}
+
 add_disk_to_vm() {
     vm_name=$1
     port=$2

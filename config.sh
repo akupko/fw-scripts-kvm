@@ -13,6 +13,11 @@ iso_path=`ls -1 iso/*.iso 2>/dev/null | head -1`
 env_name_prefix=fuelweb-test1-
 #env_name_prefix=testnet
 
+#Use bridge interface: 0 - false, 1 - true
+use_bridge=0
+#Bridge name (if use_bridge=1)
+br_name="br-vlan325"
+
 # Host interfaces to bridge VMs interfaces with
 idx=150
 netmask=255.255.255.0

@@ -14,10 +14,22 @@ source functions/product.sh
 name="${env_name_prefix}master"
 delete_vm $name
 echo
-create_vm $name ${host_nic_name[0]} $vm_master_cpu_cores $vm_master_memory_mb $vm_master_disk_mb
+create_vm $name ${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f 1`]} $vm_master_cpu_cores $vm_master_memory_mb $vm_master_disk_mb
 echo
-# Add additional NICs to VM
-add_nic_to_vm $name 2 ${host_nic_name[1]}
+
+# Adding brdige NIC if any
+if [[ $use_bridge == 1 ]]; then
+   add_br_nic_to_vm #name $br_name
+fi
+
+# Add other host-only nics to VM
+
+for i in `seq 2 ${#host_net_name[*]}`
+do 
+  add_nic_to_vm $name ${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f $i`]}	
+done
+
+#
 
 mount_iso_to_vm $name $iso_path
 
