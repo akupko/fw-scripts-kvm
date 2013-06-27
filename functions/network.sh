@@ -57,3 +57,30 @@ check_existing_vms() {
   LIST_VM=`grep -wr $NET /etc/libvirt/qemu | cut -d: -f 1 | cut -d"/" -f 5 | cut -d. -f 1 | sed '/networks/d'`
   echo "Network $NET is used by $LIST_VM VM"
 }
+
+#Check bridge create or not
+check_all_bridges() {
+  for idx1 in $idx_list
+  do
+        ip=`ip a show dev ${host_net_bridge[$idx1]}`
+        if [ $? == 0 ]; then
+                echo "Bridge exists"
+                check_existing_bridge ${host_net_bridge[$idx1]}
+                NET_ERR="True"
+        fi
+  done
+
+  if [[ $NET_ERR ]]; then
+        echo "ERROR: Some of bridges are already used, please check existing networks or redefine [idx] variable in config.sh"
+        return 1
+  else
+	return 0
+  fi
+}
+
+create_all_networks() {
+  for idx1 in $idx_list
+  do
+        define_network ${host_net_name[$idx1]} ${host_net_bridge[$idx1]} ${host_nic_ip[$idx1]} ${host_nic_mask[$idx1]}
+  done
+} 
