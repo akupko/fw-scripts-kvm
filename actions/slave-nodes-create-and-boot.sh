@@ -25,7 +25,7 @@ for idx in $(seq 1 $cluster_size); do
 
     # Adding bridge NIC if any
     if [[ $use_bridge == 1 ]]; then
-      add_br_nic_to_vm #name $br_name
+      add_br_nic_to_vm $name $br_name
     fi
 
     # Add other host-only nics to VM

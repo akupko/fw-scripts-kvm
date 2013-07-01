@@ -14,7 +14,7 @@ env_name_prefix=fuelweb-test1-
 #env_name_prefix=testnet
 
 #Use bridge interface: 0 - false, 1 - true
-use_bridge=0
+use_bridge=1
 #Bridge name (if use_bridge=1)
 br_name="br-vlan325"
 
