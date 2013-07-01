@@ -38,7 +38,7 @@ create_vm() {
 #    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --boot cdrom,hd,network
 virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --boot cdrom,hd,network --disk device=cdrom
  
-   #virsh destroy $name
+   virsh destroy $name
 
     # Configure main network interface
     add_nic_to_vm $name $nic
@@ -87,7 +87,17 @@ add_disk_to_vm() {
     disk_name="${vm_name}_${port}"
     disk_filename="${disk_name}.qcow2"
     qemu-img create -f qcow2 ${vm_disk_path}/${disk_filename} ${disk_mb}M
-    virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target $target --subdriver qcow2 --persistent
+    # adding sata disk via xml, as attach-disk can't specify bus=sata
+    #virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target ${target} --subdriver qcow2 --persistent
+    echo "Creating network template"
+    cat <<EOF > /tmp/disk_device.xml
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file="${vm_disk_path}/${disk_filename}"/>
+      <target dev="$target" bus='sata'/>
+    </disk>
+EOF
+    virsh attach-device $vm_name /tmp/disk_device.xml --persistent
 }
 
 delete_vm() {
@@ -130,8 +140,19 @@ delete_vms_multiple() {
 start_vm() {
     name=$1
 
-    # Just start it
     virsh start $name
+}
+
+start_vm_paused() {
+    name=$1
+
+    virsh start $name --paused
+}
+
+resume_vm() {
+    name=$1
+    
+    virsh resume $name
 }
 
 mount_iso_to_vm() {
