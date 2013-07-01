@@ -35,10 +35,9 @@ create_vm() {
     HYPERVISOR="qemu:///system"
    
     # Create virtual machine with the right name and type (assuming CentOS) 
-#    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --boot cdrom,hd,network
-virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --boot cdrom,hd,network --disk device=cdrom --nonetworks
+    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --boot cdrom,hd,network --disk device=cdrom --nonetworks
  
-   virsh destroy $name
+    virsh destroy $name
 
     # Configure main network interface
     add_nic_to_vm $name $nic
@@ -166,15 +165,16 @@ mount_iso_to_vm() {
 }
 
 enable_network_boot_for_vm() {
+    # The function is not needed actually. The boot order is specified during VM creation.
     name=$1
 
     # Set the right boot device
     virsh dumpxml ${name} > /tmp/${name}.xml
     # sed 
-    #VBoxManage modifyvm $name --boot1 disk --boot2 net --boot3 none --boot4 none --nicbootprio1 1
 }
 
 reset_vm() {
+    # another unused function :)
     name=$1
 
     # Power reset on VM

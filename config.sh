@@ -11,14 +11,13 @@ iso_path=`ls -1 $(pwd)/iso/*.iso 2>/dev/null | head -1`
 
 # Every Fuel Web machine name will start from this prefix  
 env_name_prefix=fuelweb-test1-
-#env_name_prefix=testnet
 
-#Use bridge interface: 0 - false, 1 - true
+#Use bridge interface: 0 - false, 1 - true. It can be useful for Public access.
 use_bridge=1
 #Bridge name (if use_bridge=1)
 br_name="br-vlan325"
 
-# Host interfaces to bridge VMs interfaces with
+#networks definition: id, list of host IP's for ech network. The first network will be used for provisioning
 idx=150
 netmask=255.255.255.0
 for ip in 10.20.0.1 172.16.1.1; do
