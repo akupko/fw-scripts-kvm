@@ -36,7 +36,7 @@ create_vm() {
    
     # Create virtual machine with the right name and type (assuming CentOS) 
 #    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --boot cdrom,hd,network
-virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --nodisks --cdrom $iso_path --boot cdrom,hd,network
+virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --boot cdrom,hd,network --disk device=cdrom
  
    #virsh destroy $name
 
@@ -87,7 +87,7 @@ add_disk_to_vm() {
     disk_name="${vm_name}_${port}"
     disk_filename="${disk_name}.qcow2"
     qemu-img create -f qcow2 ${vm_disk_path}/${disk_filename} ${disk_mb}M
-    virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target $target --subdriver qcow2
+    virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target $target --subdriver qcow2 --persistent
 }
 
 delete_vm() {
@@ -139,7 +139,9 @@ mount_iso_to_vm() {
     iso_path=$2
  
     # Mount ISO to the VM
-    virsh attach-disk ${name} ${iso_path} hdc --type cdrom --mode readonly
+    echo "Mounting ISO ${iso_path} to ${name}"
+    #virsh change-media ${name} hdc ${iso_path} --config
+    virsh attach-disk $name ${iso_path} hdc  --type cdrom --mode readonly
 }
 
 enable_network_boot_for_vm() {
@@ -149,4 +151,11 @@ enable_network_boot_for_vm() {
     virsh dumpxml ${name} > /tmp/${name}.xml
     # sed 
     #VBoxManage modifyvm $name --boot1 disk --boot2 net --boot3 none --boot4 none --nicbootprio1 1
+}
+
+reset_vm() {
+    name=$1
+
+    # Power reset on VM
+    virsh reset $name
 }

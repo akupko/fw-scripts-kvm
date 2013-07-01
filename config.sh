@@ -7,7 +7,7 @@
 cluster_size=3
 
 # Get the first available ISO from the directory 'iso'
-iso_path=`ls -1 iso/*.iso 2>/dev/null | head -1`
+iso_path=`ls -1 $(pwd)/iso/*.iso 2>/dev/null | head -1`
 
 # Every Fuel Web machine name will start from this prefix  
 env_name_prefix=fuelweb-test1-
@@ -21,7 +21,7 @@ br_name="br-vlan325"
 # Host interfaces to bridge VMs interfaces with
 idx=150
 netmask=255.255.255.0
-for ip in 10.20.1.1 172.16.1.1; do
+for ip in 10.20.0.1 172.16.1.1; do
 #for ip in 10.20.0.1 240.0.1.1 172.16.0.1; do
   host_net_name[$idx]="${env_name_prefix}${idx}"
   host_net_bridge[$idx]="virbr${idx}"

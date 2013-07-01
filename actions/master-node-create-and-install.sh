@@ -32,11 +32,12 @@ done
 
 #
 
-#mount_iso_to_vm $name $iso_path
+mount_iso_to_vm $name $iso_path
 
 # Start virtual machine with the master node
 echo
-start_vm $name
+#start_vm $name
+reset_vm $name
 
 # Wait until the machine gets installed and Puppet completes its run
 wait_for_product_vm_to_install $vm_master_ip $vm_master_username $vm_master_password "$vm_master_prompt"
