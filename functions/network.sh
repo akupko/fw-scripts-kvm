@@ -14,6 +14,7 @@ echo "Creating network template"
   cat <<EOF > ${TMP_FILE}
 <network>
   <name>${NAME}</name>
+  <forward mode="nat"/>
   <bridge name="${BRIDGE}" stp='on' delay='0' />
   <ip address="${IP}" netmask="${MASK}">
   </ip>
