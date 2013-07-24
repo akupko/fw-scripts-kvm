@@ -69,15 +69,15 @@ add_disk_to_vm() {
     port=$2
     disk_mb=$3
     case $port in 
-	1)
-	  target="sdb"
-	;;
-	2)
-	  target="sdc"
-	;;
-	*)
-	  target="sda"
-	;;
+        1)
+          target="vdb"
+        ;;
+        2)
+          target="vdc"
+        ;;
+        *)
+          target="vda"
+        ;;
     esac
 
     echo "Adding disk to $vm_name, with size $disk_mb Mb..."
@@ -85,15 +85,15 @@ add_disk_to_vm() {
     vm_disk_path="$(get_vm_base_path)"
     disk_name="${vm_name}_${port}"
     disk_filename="${disk_name}.qcow2"
-    qemu-img create -f qcow2 ${vm_disk_path}/${disk_filename} ${disk_mb}M
+    qemu-img create -f qcow2 -o preallocation=metadata ${vm_disk_path}/${disk_filename} ${disk_mb}M
     # adding sata disk via xml, as attach-disk can't specify bus=sata
     #virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target ${target} --subdriver qcow2 --persistent
     echo "Creating network template"
     cat <<EOF > /tmp/disk_device.xml
     <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2'/>
+      <driver name='qemu' type='qcow2' cache='none' io='native'/>
       <source file="${vm_disk_path}/${disk_filename}"/>
-      <target dev="$target" bus='sata'/>
+      <target dev="$target" bus='virtio'/>
     </disk>
 EOF
     virsh attach-device $vm_name /tmp/disk_device.xml --persistent
