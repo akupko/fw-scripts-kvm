@@ -52,7 +52,7 @@ add_nic_to_vm() {
     echo "Adding NIC to $name and bridging with host NIC $nic..."
 
     # Configure network interfaces
-    virsh attach-interface ${name} --type network --source ${nic} --persistent
+    virsh attach-interface ${name} --type network --source ${nic} --persistent --model virtio
 }
 
 add_br_nic_to_vm() {
@@ -61,7 +61,7 @@ add_br_nic_to_vm() {
     echo "Adding Bridge to $name"
 
     # Configure network interfaces
-    virsh attach-interface ${name} --type bridge --source ${bridge} --persistent
+    virsh attach-interface ${name} --type bridge --source ${bridge} --persistent --model virtio
 }
 
 add_disk_to_vm() {
@@ -69,15 +69,15 @@ add_disk_to_vm() {
     port=$2
     disk_mb=$3
     case $port in 
-        1)
-          target="vdb"
-        ;;
-        2)
-          target="vdc"
-        ;;
-        *)
-          target="vda"
-        ;;
+	1)
+	  target="vdb"
+	;;
+	2)
+	  target="vdc"
+	;;
+	*)
+	  target="vda"
+	;;
     esac
 
     echo "Adding disk to $vm_name, with size $disk_mb Mb..."

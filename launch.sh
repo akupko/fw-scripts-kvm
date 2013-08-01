@@ -9,3 +9,5 @@
 # Create and launch slave nodes
 ./actions/slave-nodes-create-and-boot.sh || exit 1
 
+# Bring up public interface on master node
+#./actions/create_pub_net_master.sh || exit 1
