@@ -44,6 +44,7 @@ virt-install --connect qemu:///system --hvm --name $name --ram $vm_master_memory
 
 # Start virtual machine with the master node
 echo "Waiting for OS installation on Master node"
+sleep 5
 while is_vm_running $name; do
 	sleep 5
 done

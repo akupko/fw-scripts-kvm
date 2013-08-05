@@ -37,7 +37,7 @@ for idx in $(seq 1 $cluster_size); do
 
     # Add additional disks to VM
     echo
-    add_disk_to_vm $name 1 $vm_slave_second_disk_mb
+    #add_disk_to_vm $name 1 $vm_slave_second_disk_mb
     #add_disk_to_vm $name 2 $vm_slave_third_disk_mb
 
     #enable_network_boot_for_vm $name 

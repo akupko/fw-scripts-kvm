@@ -37,7 +37,7 @@ done
 
 # Master node settings
 vm_master_cpu_cores=1
-vm_master_memory_mb=1280
+vm_master_memory_mb=1024
 vm_master_disk_mb=16384
 
 # These settings will be used to check if master node has installed or not.

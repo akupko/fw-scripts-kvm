@@ -7,11 +7,11 @@ get_vm_base_path() {
 }
 
 get_vms_running() {
-    virsh list | grep running | awk '{print $2}'
+    virsh list | grep -E "running|работает" | awk '{print $2}'
 }
 
 get_vms_present() {
-    virsh list --all | grep -E "running|shut off" | awk '{print $2}'
+    virsh list --all | grep -E "running|shut off|работает|выключен" | awk '{print $2}'
 }
 
 is_vm_running() {
