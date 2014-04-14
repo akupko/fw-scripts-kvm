@@ -35,7 +35,7 @@ create_vm() {
     HYPERVISOR="qemu:///system"
    
     # Create virtual machine with the right name and type (assuming CentOS) 
-    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --boot cdrom,hd,network --disk device=cdrom --nonetworks
+    virt-install --connect=${HYPERVISOR} --name=${name} --arch=x86_64 --vcpus=${cpu_cores} --ram=${memory_mb} --os-type=linux --os-variant=rhel6 --hvm --accelerate --vnc --noautoconsole --keymap=en-us --boot cdrom,hd,network --disk device=cdrom --nonetworks --cpu host --noautoconsole
  
     virsh destroy $name
 
@@ -91,7 +91,7 @@ add_disk_to_vm() {
     echo "Creating network template"
     cat <<EOF > /tmp/disk_device.xml
     <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2' cache='none' io='native'/>
+      <driver name='qemu' type='qcow2' cache='unsafe'/>
       <source file="${vm_disk_path}/${disk_filename}"/>
       <target dev="$target" bus='virtio'/>
     </disk>
